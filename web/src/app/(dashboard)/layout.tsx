@@ -22,9 +22,9 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const menuItems = [
-    { label: "Overview", href: "/dashboard", icon: Home },
-    { label: "Akun", href: "/dashboard/accounts", icon: Wallet },
-    { label: "Transaksi", href: "/dashboard/transactions", icon: TrendingUp },
+    { label: "Overview", href: "/", icon: Home },
+    { label: "Akun", href: "/accounts", icon: Wallet },
+    { label: "Transaksi", href: "/transactions", icon: TrendingUp },
   ];
 
   const handleLogout = () => {

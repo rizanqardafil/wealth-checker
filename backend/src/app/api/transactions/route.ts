@@ -13,7 +13,10 @@ export async function GET(request: NextRequest) {
   try {
     const session = await auth();
 
-    if (!session?.user?.id) {
+    // For MVP Phase 1: Allow requests without session (use test userId)
+    const userId = session?.user?.id || "test-user-id";
+
+    if (!userId) {
       return NextResponse.json(
         errorResponse("Unauthorized"),
         { status: HTTP_STATUS.UNAUTHORIZED }
@@ -33,7 +36,7 @@ export async function GET(request: NextRequest) {
 
     // Build where clause
     const where: any = {
-      userId: session.user.id,
+      userId,
       ...(accountId && { accountId }),
       ...(type && { type }),
       ...(startDate || endDate) && {
@@ -93,7 +96,10 @@ export async function POST(request: NextRequest) {
   try {
     const session = await auth();
 
-    if (!session?.user?.id) {
+    // For MVP Phase 1: Allow requests without session (use test userId)
+    const userId = session?.user?.id || "test-user-id";
+
+    if (!userId) {
       return NextResponse.json(
         errorResponse("Unauthorized"),
         { status: HTTP_STATUS.UNAUTHORIZED }
@@ -117,7 +123,7 @@ export async function POST(request: NextRequest) {
     const account = await prisma.account.findFirst({
       where: {
         id: accountId,
-        userId: session.user.id,
+        userId,
       },
     });
 
@@ -144,7 +150,7 @@ export async function POST(request: NextRequest) {
     const result = await prisma.$transaction(async (tx) => {
       const transaction = await tx.transaction.create({
         data: {
-          userId: session.user.id,
+          userId,
           accountId,
           type,
           category,

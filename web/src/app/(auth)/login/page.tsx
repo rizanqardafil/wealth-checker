@@ -32,12 +32,30 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      // For now, we'll just redirect to dashboard since we don't have backend signin
-      // In Phase 2, we'll implement proper backend login
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+        credentials: "include",
+      });
 
-      // Simulate login success
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || "Login gagal. Coba lagi.");
+        return;
+      }
+
+      // Login successful
       localStorage.setItem("user_email", data.email);
-      router.push("/dashboard");
+      localStorage.setItem("user_id", result.data?.user?.id || "");
+      router.push("/");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Login gagal. Coba lagi."

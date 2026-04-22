@@ -38,11 +38,29 @@ export default function SignupPage() {
     setError(null);
 
     try {
-      // For now, we'll just redirect to dashboard
-      // In Phase 2, we'll implement proper backend signup
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+      const response = await fetch(`${apiUrl}/api/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          confirmPassword: data.confirmPassword,
+        }),
+        credentials: "include",
+      });
 
-      localStorage.setItem("user_email", data.email);
-      router.push("/dashboard");
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || "Daftar gagal. Coba lagi.");
+        return;
+      }
+
+      // Redirect to login after successful signup
+      router.push("/login?message=Signup%20berhasil.%20Silakan%20login.");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Daftar gagal. Coba lagi."

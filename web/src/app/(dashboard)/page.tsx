@@ -7,11 +7,13 @@ export default function DashboardPage() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true);
+        setError(null);
         const [accountsRes, transactionsRes] = await Promise.all([
           accountApi.list(),
           transactionApi.list(),
@@ -19,12 +21,19 @@ export default function DashboardPage() {
 
         if (accountsRes.success) {
           setAccounts(accountsRes.data?.accounts || []);
+        } else {
+          console.warn("Failed to load accounts:", accountsRes.error);
+          setError(accountsRes.error || "Gagal memuat akun");
         }
+
         if (transactionsRes.success) {
           setTransactions(transactionsRes.data?.transactions || []);
+        } else {
+          console.warn("Failed to load transactions:", transactionsRes.error);
         }
       } catch (err) {
         console.error("Failed to load data:", err);
+        setError(err instanceof Error ? err.message : "Gagal memuat data");
       } finally {
         setIsLoading(false);
       }
@@ -47,6 +56,23 @@ export default function DashboardPage() {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-gray-600">Memuat data...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
+          <p className="text-red-700 font-semibold mb-2">Error</p>
+          <p className="text-red-600 text-sm">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+          >
+            Refresh
+          </button>
+        </div>
       </div>
     );
   }
