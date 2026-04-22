@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { accountApi, transactionApi, Account, Transaction } from "@/lib/api";
-import { Plus, Trash2, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 
 const TRANSACTION_CATEGORIES: Record<string, string[]> = {
   INCOME: ["Gaji", "Bonus", "Freelance", "Investasi", "Lainnya"],
