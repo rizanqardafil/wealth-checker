@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+*.log
+*.log.*
+
+# Build outputs
+/build/
+/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Prisma
+/prisma/migrations/
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Misc
+.cache/
+.turbo/
+*.pem

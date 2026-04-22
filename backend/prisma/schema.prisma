@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String     // Hashed with bcryptjs
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  accounts      Account[]
+  transactions  Transaction[]
+  assets        Asset[]
+  debts         Debt[]
+  budgets       Budget[]
+  snapshots     FinancialSnapshot[]
+}
+
+model Account {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name      String     // e.g., "Rekening Utama", "Tabungan"
+  type      String     // DEBIT | KREDIT | SAVINGS | INVESTMENT
+  balance   Decimal    @default(0)
+  currency  String     @default("IDR")
+
+  transactions  Transaction[]
+  transfersFrom Transfer[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([userId, createdAt])
+}
+
+model Transaction {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  accountId String
+  account   Account    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  type      String     // INCOME | EXPENSE | ASSET | DEBT
+  category  String     // Dynamic: depends on type
+  amount    Decimal
+  description String?
+  date      DateTime
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId, date])
+  @@index([accountId])
+  @@index([type])
+}
+
+model Transfer {
+  id        String     @id @default(cuid())
+  userId    String
+
+  fromAccountId String
+  fromAccount   Account @relation(fields: [fromAccountId], references: [id], onDelete: Cascade)
+
+  toAccountId String  // Can store as string (no foreign key for flexibility)
+
+  amount    Decimal
+  description String?
+  date      DateTime
+
+  createdAt DateTime   @default(now())
+
+  @@index([userId])
+  @@index([fromAccountId])
+}
+
+model Asset {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name      String     // e.g., "Emas", "Saham ABC", "Properti"
+  type      String     // GOLD | STOCKS | REAL_ESTATE | VEHICLE | OTHER
+  quantity  Decimal
+  unitPrice Decimal    // Price per unit at purchase
+  currentValue Decimal // Current market value
+  purchaseDate DateTime
+  description String?
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+model Debt {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name      String     // e.g., "Cicilan Motor", "Utang Teman"
+  type      String     // LOAN | CREDIT_CARD | PERSONAL | MORTGAGE
+  amount    Decimal    // Total debt
+  remaining Decimal    // Remaining balance
+  monthlyPayment Decimal
+  interestRate Decimal? // Annual percentage
+  dueDate   DateTime?
+  status    String     @default("ACTIVE") // ACTIVE | SETTLED
+  description String?
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Budget {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  category  String     // Expense category
+  plannedAmount Decimal
+  month     Int        // 1-12
+  year      Int
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId, month, year])
+}
+
+model FinancialSnapshot {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  month     Int
+  year      Int
+
+  // Assets & Debts
+  totalAssets Decimal @default(0)
+  totalDebts  Decimal @default(0)
+  netWorth    Decimal @default(0)
+
+  // Income & Expense
+  totalIncome Decimal @default(0)
+  totalExpense Decimal @default(0)
+  netIncome   Decimal @default(0)
+
+  // Health metrics
+  healthScore Int @default(0)    // 0-100
+  freedomLevel Int @default(0)   // 0-6
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, month, year])
+}
+
+model Report {
+  id        String     @id @default(cuid())
+  userId    String
+
+  type      String     // MUTASI | P&L | CASH_FLOW | BALANCE | NET_WORTH
+  month     Int
+  year      Int
+
+  data      Json       // JSON blob with report data
+
+  createdAt DateTime   @default(now())
+
+  @@index([userId, type, month, year])
+}
