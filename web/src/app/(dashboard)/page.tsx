@@ -28,6 +28,12 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("monthly");
   const [period, setPeriod] = useState("This Month");
+  const [userEmail, setUserEmail] = useState("");
+
+  useEffect(() => {
+    const email = localStorage.getItem("user_email") || "";
+    setUserEmail(email);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -97,12 +103,19 @@ export default function DashboardPage() {
     );
   }
 
+  const getUserName = (): string => {
+    if (!userEmail) return "Welcome";
+    const namePart = userEmail.split("@")[0];
+    const firstName = namePart.split(".")[0];
+    return firstName.charAt(0).toUpperCase() + firstName.slice(1);
+  };
+
   return (
     <>
       {/* Topbar */}
       <div className={styles.topbar}>
         <div className={styles.pageTitle}>
-          <h1>Hi, Welcome Back 👋</h1>
+          <h1>Hi, {getUserName()} 👋</h1>
           <p>Good Morning · {getFormattedDate()}</p>
         </div>
         <div className={styles.topbarActions}>

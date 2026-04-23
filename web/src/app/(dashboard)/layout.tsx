@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -10,8 +10,6 @@ import {
   Repeat2,
   Clock,
   LogOut,
-  Bell,
-  Search,
 } from "lucide-react";
 import styles from "./dashboard.module.css";
 
@@ -22,9 +20,33 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("User");
+  const [userInitials, setUserInitials] = useState("U");
+
+  useEffect(() => {
+    const email = localStorage.getItem("user_email") || "";
+    setUserEmail(email);
+
+    if (email) {
+      const namePart = email.split("@")[0];
+      const name = namePart
+        .split(".")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+      setUserName(name);
+
+      const initials = namePart
+        .split(".")
+        .map((word) => word.charAt(0).toUpperCase())
+        .join("");
+      setUserInitials(initials.slice(0, 2));
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user_email");
+    localStorage.removeItem("user_id");
     router.push("/login");
   };
 
@@ -38,8 +60,6 @@ export default function DashboardLayout({
     { label: "Budget", href: "/budget", icon: Clock },
   ];
 
-  const userInitials = "JD";
-  const userName = "John Doe";
   const userRole = "Premium Plan";
 
   return (
