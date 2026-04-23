@@ -1,14 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
-  --bg: #0d2b2b;
+  --bg: #0a2424;
+  --sidebar: #0d2b2b;
   --card: #122e2e;
   --card2: #163535;
+  --card3: #1a3d3d;
   --teal: #2ee8b5;
-  --teal-dark: #1dc99a;
+  --teal2: #1dc99a;
+  --blue: #5b9cf6;
+  --red: #ff6b6b;
   --text: #e8f5f0;
-  --muted: #7aada0;
+  --muted: #6b9e94;
+  --muted2: #4a7a72;
+  --border: rgba(255,255,255,.06);
   --input-bg: #d8f0e8;
   --input-text: #1a3a35;
   --border-r: 18px;

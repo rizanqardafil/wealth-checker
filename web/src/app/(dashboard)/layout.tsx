@@ -7,10 +7,13 @@ import {
   Home,
   Wallet,
   TrendingUp,
+  Repeat2,
+  Clock,
   LogOut,
-  Menu,
-  X,
+  Bell,
+  Search,
 } from "lucide-react";
+import styles from "./dashboard.module.css";
 
 export default function DashboardLayout({
   children,
@@ -19,13 +22,6 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const menuItems = [
-    { label: "Overview", href: "/", icon: Home },
-    { label: "Akun", href: "/accounts", icon: Wallet },
-    { label: "Transaksi", href: "/transactions", icon: TrendingUp },
-  ];
 
   const handleLogout = () => {
     localStorage.removeItem("user_email");
@@ -34,63 +30,221 @@ export default function DashboardLayout({
 
   const isActive = (href: string) => pathname === href;
 
+  const menuItems = [
+    { label: "Dashboard", href: "/", icon: Home },
+    { label: "Transactions", href: "/transactions", icon: Wallet, badge: "3" },
+    { label: "Analytics", href: "/analytics", icon: TrendingUp },
+    { label: "Transfer", href: "/transfer", icon: Repeat2 },
+    { label: "Budget", href: "/budget", icon: Clock },
+  ];
+
+  const userInitials = "JD";
+  const userName = "John Doe";
+  const userRole = "Premium Plan";
+
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className={styles.app}>
       {/* Sidebar */}
-      <aside
-        className={`${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 fixed md:static w-64 h-full bg-gradient-to-b from-purple-600 to-purple-700 text-white transition-transform duration-300 z-40`}
-      >
-        <div className="p-6">
-          <h1 className="text-2xl font-bold">💰 Wealth Checker</h1>
+      <aside className={styles.sidebar}>
+        <div className={styles.logo}>
+          <div className={styles.logoIcon}>📊</div>
+          <span className={styles.logoText}>FinTrack</span>
         </div>
 
-        <nav className="space-y-2 px-4">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-                  isActive(item.href)
-                    ? "bg-white text-purple-600 font-semibold"
-                    : "hover:bg-purple-500"
-                }`}
-              >
-                <Icon size={20} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className={styles.navSection}>
+          <div className={styles.navLabel}>Main Menu</div>
+          {menuItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`${styles.navItem} ${isActive(item.href) ? styles.active : ""}`}
+            >
+              <item.icon width={16} height={16} />
+              {item.label}
+              {item.badge && <span className={styles.navBadge}>{item.badge}</span>}
+            </Link>
+          ))}
+        </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-purple-500">
+        <div className={styles.navSection}>
+          <div className={styles.navLabel}>Account</div>
+          <button className={styles.navItem}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            Profile
+          </button>
+          <button className={styles.navItem}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.07 4.93A10 10 0 0 1 21 12M12 2a10 10 0 0 1 7.07 2.93" />
+            </svg>
+            Settings
+          </button>
+        </div>
+
+        <div className={styles.sidebarFooter}>
+          <div className={styles.userCard}>
+            <div className={styles.avatar}>{userInitials}</div>
+            <div className={styles.userInfo}>
+              <div className={styles.name}>{userName}</div>
+              <div className={styles.role}>{userRole}</div>
+            </div>
+            <svg className={styles.chev} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-red-600 rounded-lg transition"
+            className={styles.navItem}
+            style={{ marginTop: "12px", color: "var(--red)" }}
           >
-            <LogOut size={20} />
+            <LogOut width={16} height={16} />
             Logout
           </button>
         </div>
       </aside>
 
-      {/* Mobile Menu Button */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 bg-purple-600 text-white rounded-lg"
-        >
-          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
       {/* Main Content */}
-      <main className="flex-1 overflow-auto p-4 md:p-8 pt-16 md:pt-8">
+      <main className={styles.main}>
         {children}
       </main>
+
+      {/* Right Panel */}
+      <aside className={styles.panel}>
+        <div className={styles.psec}>
+          <h3>Savings Goals</h3>
+          <div className={styles.goalsList}>
+            <div className={styles.goal}>
+              <div className={styles.goalTop}>
+                <div className={styles.goalName}>
+                  <span>🚗</span>Car Fund
+                </div>
+                <div className={styles.goalPct}>75%</div>
+              </div>
+              <div className={styles.gBar}>
+                <div className={`${styles.gFill} ${styles.t}`} style={{ width: "75%" }} />
+              </div>
+              <div className={styles.gAmts}>
+                <span>$7,500</span>
+                <span>$10,000</span>
+              </div>
+            </div>
+
+            <div className={styles.goal}>
+              <div className={styles.goalTop}>
+                <div className={styles.goalName}>
+                  <span>🏖️</span>Vacation
+                </div>
+                <div className={styles.goalPct}>42%</div>
+              </div>
+              <div className={styles.gBar}>
+                <div className={`${styles.gFill} ${styles.b}`} style={{ width: "42%" }} />
+              </div>
+              <div className={styles.gAmts}>
+                <span>$2,100</span>
+                <span>$5,000</span>
+              </div>
+            </div>
+
+            <div className={styles.goal}>
+              <div className={styles.goalTop}>
+                <div className={styles.goalName}>
+                  <span>💻</span>Laptop
+                </div>
+                <div className={styles.goalPct}>60%</div>
+              </div>
+              <div className={styles.gBar}>
+                <div className={`${styles.gFill} ${styles.p}`} style={{ width: "60%" }} />
+              </div>
+              <div className={styles.gAmts}>
+                <span>$900</span>
+                <span>$1,500</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.psec}>
+          <h3>Quick Actions</h3>
+          <div className={styles.qaGrid}>
+            <button className={styles.qa}>
+              <div className={styles.qaIco}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </div>
+              Add Income
+            </button>
+            <button className={styles.qa}>
+              <div className={styles.qaIco}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </div>
+              Add Expense
+            </button>
+            <button className={styles.qa}>
+              <div className={styles.qaIco}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="17 1 21 5 17 9" />
+                  <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                </svg>
+              </div>
+              Transfer
+            </button>
+            <button className={styles.qa}>
+              <div className={styles.qaIco}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </div>
+              Reports
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.psec}>
+          <h3>Recent Contacts</h3>
+          <div className={styles.contactsRow}>
+            <div className={styles.contact}>
+              <div className={styles.cAv} style={{ background: "linear-gradient(135deg, #6a9fff, #4f8ef7)" }}>
+                AL
+              </div>
+              <div className={styles.cName}>Alice</div>
+            </div>
+            <div className={styles.contact}>
+              <div className={styles.cAv} style={{ background: "linear-gradient(135deg, #f97316, #ef4444)" }}>
+                BM
+              </div>
+              <div className={styles.cName}>Bob</div>
+            </div>
+            <div className={styles.contact}>
+              <div className={styles.cAv} style={{ background: "linear-gradient(135deg, #a78bfa, #7c3aed)" }}>
+                CK
+              </div>
+              <div className={styles.cName}>Carol</div>
+            </div>
+            <div className={styles.contact}>
+              <div className={styles.cAv} style={{ background: "linear-gradient(135deg, #2ee8b5, #1dc99a)", color: "var(--bg)" }}>
+                DW
+              </div>
+              <div className={styles.cName}>David</div>
+            </div>
+            <div className={styles.contact}>
+              <button className={styles.cAdd}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </button>
+              <div className={styles.cName}>Add</div>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   );
 }
