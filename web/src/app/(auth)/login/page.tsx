@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Eye, EyeOff } from "lucide-react";
+import styles from "../auth.module.css";
 
 const LoginSchema = z.object({
   email: z.string().email("Email harus valid"),
@@ -18,6 +20,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -35,13 +38,8 @@ export default function LoginPage() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
       const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email, password: data.password }),
         credentials: "include",
       });
 
@@ -52,75 +50,136 @@ export default function LoginPage() {
         return;
       }
 
-      // Login successful
       localStorage.setItem("user_email", data.email);
       localStorage.setItem("user_id", result.data?.user?.id || "");
       router.push("/");
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Login gagal. Coba lagi."
-      );
+      setError(err instanceof Error ? err.message : "Login gagal. Coba lagi.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Masuk</h1>
-      <p className="text-gray-600 mb-6">Selamat datang kembali di Wealth Checker</p>
+    <div className={styles.container}>
+      {/* ── Header ── */}
+      <div className={styles.header}>
+        <h1>Welcome</h1>
+      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-            {error}
+      {/* ── Card ── */}
+      <div className={styles.card}>
+        {error && <div className={styles.errorMsg}>{error}</div>}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.formFieldsGrid}>
+          {/* Email */}
+          <div className={styles.field}>
+            <label className={styles.label}>Username Or Email</label>
+            <div className={styles.inputWrap}>
+              <input
+                type="email"
+                {...register("email")}
+                placeholder="example@example.com"
+                autoComplete="email"
+                className={`${styles.input} ${styles.inputSmall} ${errors.email ? styles.error : ""}`}
+              />
+            </div>
+            {errors.email && <p className={styles.fieldError}>{errors.email.message}</p>}
           </div>
-        )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
-          <input
-            type="email"
-            {...register("email")}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="email@example.com"
-          />
-          {errors.email && (
-            <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
-          )}
+          {/* Password */}
+          <div className={styles.field}>
+            <label className={styles.label}>Password</label>
+            <div className={styles.inputWrap}>
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                className={`${styles.input} ${errors.password ? styles.error : ""}`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={styles.eyeBtn}
+                aria-label="Toggle password"
+              >
+                {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+              </button>
+            </div>
+            {errors.password && <p className={styles.fieldError}>{errors.password.message}</p>}
+          </div>
+        </form>
+
+        {/* ── Actions ── */}
+        <div className={styles.actions}>
+          {/* Log In */}
+          <button
+            type="button"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isLoading}
+            className={`${styles.btn} ${styles.btnPrimary}`}
+          >
+            {isLoading ? "Memproses..." : "Log In"}
+          </button>
+
+          {/* Forgot */}
+          <Link href="/forgot-password" className={styles.forgot}>
+            Forgot Password?
+          </Link>
+
+          {/* Sign Up */}
+          <button
+            type="button"
+            onClick={() => router.push("/signup")}
+            className={`${styles.btn} ${styles.btnOutline}`}
+          >
+            Sign Up
+          </button>
+
+          {/* Fingerprint */}
+          <p className={styles.fingerprintRow}>
+            Use{" "}
+            <span onClick={() => console.log("Fingerprint auth")}>
+              Fingerprint
+            </span>{" "}
+            To Access
+          </p>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            {...register("password")}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="••••••••"
-          />
-          {errors.password && (
-            <p className="text-red-600 text-sm mt-1">{errors.password.message}</p>
-          )}
+        {/* ── Divider ── */}
+        <div className={styles.dividerRow}>
+          <div className={styles.dividerLine} />
+          <span className={styles.dividerText}>or sign up with</span>
+          <div className={styles.dividerLine} />
         </div>
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-purple-600 text-white font-semibold py-2 rounded-lg hover:bg-purple-700 disabled:bg-gray-400"
-        >
-          {isLoading ? "Memproses..." : "Masuk"}
-        </button>
-      </form>
+        {/* ── Social ── */}
+        <div className={styles.socialRow}>
+          {/* Facebook */}
+          <button type="button" className={styles.socialBtn} title="Facebook">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg>
+          </button>
 
-      <p className="text-center text-gray-600 mt-6">
-        Belum punya akun?{" "}
-        <Link href="/signup" className="text-purple-600 font-semibold hover:underline">
-          Daftar di sini
-        </Link>
+          {/* Google */}
+          <button type="button" className={styles.socialBtn} title="Google">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* ── Bottom prompt ── */}
+      <p className={styles.signupPrompt}>
+        Don&apos;t have an account?{" "}
+        <Link href="/signup">Sign Up</Link>
       </p>
     </div>
   );

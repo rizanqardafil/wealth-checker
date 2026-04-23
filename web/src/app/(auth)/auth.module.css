@@ -1,0 +1,304 @@
+/* =============================================
+   auth.module.css â€” matches HTML login design
+   ============================================= */
+
+.container {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* â”€â”€ Header â”€â”€ */
+.header {
+  text-align: center;
+  padding: 0 0 40px;
+}
+
+.header h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+@media (min-width: 768px) {
+  .header h1 { font-size: 2.8rem; }
+}
+
+/* â”€â”€ Card â”€â”€ */
+.card {
+  background: var(--card);
+  border: 1px solid rgba(45, 232, 181, 0.08);
+  border-radius: 32px;
+  padding: 48px 40px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(45, 232, 181, 0.05) inset;
+}
+
+@media (min-width: 768px) {
+  .card { padding: 52px 48px 48px; min-width: 500px; }
+}
+
+/* â”€â”€ Form fields grid â”€â”€ */
+.formFieldsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* â”€â”€ Field â”€â”€ */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+/* â”€â”€ Input â”€â”€ */
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  background: var(--input-bg);
+  border: none;
+  border-radius: 50px;
+  padding: 15px 52px 15px 22px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: var(--input-text);
+  outline: none;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.input::placeholder { color: #9abfb5; }
+
+.input:focus {
+  box-shadow: 0 0 0 3px rgba(46, 232, 181, 0.35);
+  transform: translateY(-1px);
+}
+
+.input.error {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.4);
+}
+
+/* input without eye icon (full-width padding) */
+.inputSmall {
+  padding: 15px 22px;
+}
+
+/* â”€â”€ Eye toggle button â”€â”€ */
+.eyeBtn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  transition: color 0.2s;
+}
+
+.eyeBtn:hover { color: var(--input-text); }
+
+/* â”€â”€ Validation errors â”€â”€ */
+.fieldError {
+  color: #fca5a5;
+  font-size: 0.78rem;
+  padding-left: 4px;
+}
+
+.errorMsg {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #fca5a5;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  margin-bottom: 4px;
+}
+
+/* â”€â”€ Actions block â”€â”€ */
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+/* â”€â”€ Buttons â”€â”€ */
+.btn {
+  width: 100%;
+  max-width: 280px;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 32px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, filter 0.15s;
+  letter-spacing: 0.01em;
+}
+
+.btn:active { transform: scale(0.97); }
+
+/* full-width variant (used in signup form) */
+.btnFull {
+  max-width: 100%;
+  margin-top: 8px;
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  color: #0d2b2b;
+  box-shadow: 0 8px 24px rgba(46, 232, 181, 0.35);
+}
+
+.btnPrimary:hover {
+  filter: brightness(1.07);
+  box-shadow: 0 12px 32px rgba(46, 232, 181, 0.48);
+  transform: translateY(-2px);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btnOutline {
+  background: var(--input-bg);
+  color: var(--input-text);
+  border: 2px solid var(--input-bg);
+}
+
+.btnOutline:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(232, 245, 240, 0.12);
+}
+
+/* â”€â”€ Forgot password â”€â”€ */
+.forgot {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  opacity: 0.65;
+  transition: opacity 0.2s;
+  margin-top: -4px;
+}
+
+.forgot:hover { opacity: 1; color: var(--teal); }
+
+/* â”€â”€ Fingerprint row â”€â”€ */
+.fingerprintRow {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.fingerprintRow span {
+  color: var(--teal);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+
+.fingerprintRow span:hover {
+  text-decoration-color: var(--teal);
+}
+
+/* â”€â”€ Divider â”€â”€ */
+.dividerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: rgba(122, 181, 172, 0.2);
+}
+
+.dividerText {
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* â”€â”€ Social buttons â”€â”€ */
+.socialRow {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.socialBtn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(122, 181, 172, 0.3);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text);
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  padding: 0;
+}
+
+.socialBtn:hover {
+  border-color: var(--teal);
+  background: rgba(46, 232, 181, 0.08);
+  transform: translateY(-2px);
+}
+
+/* â”€â”€ Signup prompt â”€â”€ */
+.signupPrompt {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+  padding: 24px 0 8px;
+}
+
+.signupPrompt a {
+  color: var(--teal);
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.signupPrompt a:hover { opacity: 0.8; }
