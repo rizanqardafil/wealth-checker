@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 // For Phase 1 (MVP), we'll skip auth middleware and implement it in individual routes
 // This allows testing without full NextAuth setup
 // TODO: Move auth checks to individual route handlers or implement NextAuth session properly
-const protectedRoutes = [
+const protectedRoutes: string[] = [
   // Temporarily disabled - auth will be checked in individual route handlers
   // "/api/accounts",
   // "/api/transactions",
