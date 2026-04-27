@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const validation = SignupSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
-        errorResponse(validation.error.errors[0].message),
+        errorResponse(validation.error.issues[0].message),
         { status: HTTP_STATUS.BAD_REQUEST }
       );
     }
