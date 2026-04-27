@@ -19,7 +19,14 @@ export async function middleware(request: NextRequest) {
 
   // Add CORS headers
   const origin = request.headers.get("origin");
-  if (origin && (origin.includes("localhost") || origin.includes("127.0.0.1"))) {
+  const allowedOrigins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://wealth-checker-frontend.vercel.app",
+    process.env.FRONTEND_URL,
+  ].filter(Boolean);
+
+  if (origin && allowedOrigins.includes(origin)) {
     response.headers.set("Access-Control-Allow-Origin", origin);
     response.headers.set("Access-Control-Allow-Credentials", "true");
     response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
